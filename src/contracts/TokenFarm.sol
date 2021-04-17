@@ -74,4 +74,20 @@ contract TokenFarm {
     }
 
     // Thirdly, we will UNSTAKE Tokens (Withdraw)
+    function unstakeTokens() public {
+        // Fetch the staking balance (from the users balance on the app)
+        uint balance = stakingBalance[msg.sender];
+
+        // Require amount greater than 0
+        require(balance > 0, "staking balance cannot be 0");
+
+        // Transfer Mock DAI tokens to this contract for staking (transferring from the app back to users)
+        daiToken.transfer(msg.sender, balance);
+
+        // Reset the staking balance (reset the user's stakinig balance)
+        stakingBalance[msg.sender] = 0;
+
+        // Update staking status
+        isStaking[msg.sender] = false;
+    }
 }
