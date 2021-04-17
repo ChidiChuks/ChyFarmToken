@@ -6,6 +6,10 @@ import "./DaiToken.sol";
 contract TokenFarm {
     // All code goes here...
     string public name = "Chy Token Farm";
+
+    // Creating a state variable to track the owner
+    address public owner;
+
     ChyToken public chyToken;
     DaiToken public daiToken;
 
@@ -24,11 +28,18 @@ contract TokenFarm {
     constructor(ChyToken _chyToken, DaiToken _daiToken) public {
         chyToken = _chyToken;
         daiToken = _daiToken;
+
+        // Keep track of owner when deploying the contract
+        owner = msg.sender;
     }
 
     // Firstly, we will STAKE Tokens (Deposit)
     function stakeTokens(uint _amount) public {
+        
         // Code goes inside here...
+
+        // Require amount greater than 0
+        require(_amount > 0, "amount cannot be 0");
 
         // Transfer Mock DAI tokens to this contract for staking
         daiToken.transferFrom(msg.sender, address(this), _amount);
@@ -47,7 +58,20 @@ contract TokenFarm {
 
     }
 
-    // Secondly, we will UNSTAKE Tokens (Withdraw)
+    // Secondly, we will ISSUE Tokens (Earning Interest)
+    function issueTokens() public {
+        // only allow owner to issue token
+        require(msg.sender == owner, "caller must be the owner");
 
-    // Thirdly, we will ISSUE Tokens (Earning Interest)
+        // Issue tokens to all stakers
+        for (uint i = 0; i < stakers.length; i++) {
+            address recipient = stakers[i];
+            uint balance = stakingBalance[recipient];
+            if(balance > 0) {
+                chyToken.transfer(recipient, balance);
+            }
+        }
+    }
+
+    // Thirdly, we will UNSTAKE Tokens (Withdraw)
 }

@@ -91,6 +91,16 @@ contract('TokenFarm', ([owner, investor]) => {
             // Checking status of the staking balance
             result = await tokenFarm.isStaking(investor)
             assert.equal(result.toString(), 'true', 'Investor staking status is correct after staking')
+
+            // Issue tokens
+            await tokenFarm.issueTokens({ from: owner })
+
+            // Check balances after issuance
+            result = await chyToken.balanceOf(investor)
+            assert.equal(result.toString(), tokens('100'), 'Investor Chy Token wallet balance is correct after issuance')
+
+            // Ensure that only the owner can issue tokens
+            await tokenFarm.issueTokens({ from: investor }).should.be.rejected;
         })
     })
 
