@@ -6,6 +6,9 @@ import TokenFarm from '../abis/TokenFarm.json'
 import Navbar from './Navbar'
 import './App.css'
 
+// Personal imports
+import Main from './Main'
+
 class App extends Component {
 
   // Calling the function of web3
@@ -90,6 +93,19 @@ class App extends Component {
   }
 
   render() {
+    let content
+    if(this.state.loading) {
+      content = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      content = <Main 
+        daiTokenBalance={this.state.daiTokenBalance}
+        chyTokenBalance={this.state.chyTokenBalance}
+        stakingBalance={this.state.stakingBalance}
+        // stakeTokens={this.stakeTokens}
+        // unstakeTokens={this.unstakeTokens}
+      />
+    }
+
     return (
       <div>
         <Navbar account={this.state.account} />
@@ -104,7 +120,7 @@ class App extends Component {
                 >
                 </a>
 
-                <h1>Hello, World!</h1>
+                {content}
 
               </div>
             </main>
