@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
+import DaiToken from '../abis/DaiToken.json'
+import ChyToken from '../abis/ChyToken.json'
 import Navbar from './Navbar'
 import './App.css'
 
@@ -30,6 +32,17 @@ class App extends Component {
       this.setState({ daiTokenBalance: daiTokenBalance.toString() })
     } else {
       window.alert('DaiToken contract not deployed to detected network.')
+    }
+
+    // Load ChyToken
+    const chyTokenData = ChyToken.networks[networkId]
+    if(chyTokenData) {
+      const chyToken = new web3.eth.Contract(ChyToken.abi, chyTokenData.address)
+      this.setState({ chyToken })
+      let chyTokenBalance = await chyToken.methods.balanceOf(this.state.account).call()
+      this.setState({ chyTokenBalance: chyTokenBalance.toString() })
+    } else {
+      window.alert('ChyToken contract not deployed to detected network')
     }
 
   }
